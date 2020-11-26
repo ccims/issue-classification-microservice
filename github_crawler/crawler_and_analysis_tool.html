@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+    <title>Issue Crawler/Analyse Tool</title>
+    <meta name="description" content="Tool to crawl and sanity check issues from GitHub Repositories.">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style/crawler_style.css">
+</head>
+
+<body>
+    <!-- This wrapper contains the crawler tool:-->
+    <div id="crawlerWrapper">
+        <h1>Crawler</h1>
+        <h4> 
+			Using this tool, one can crawl issues from GitHub Repositories. Optionally one can set a label to download specific issues matching this label. 
+			Using the text field besides, one is able to rename the label to ones liking.  
+            <!-- Mit diesem Werkzeug kann man Issues aus GitHub Repositories crawlen. Optional kann man außerdem Labels angeben, welche in dem
+            Repository genutzt werden, um nur Issues einer bestimmten Klasse herunterzuladen. Das Label kann man im nebenliegenden 
+            Textfeld umbenennen. :-->
+        </h4><br>
+        <!-- Input fields for the GitHub username, repository and the amount of requests:-->
+        <div id="requestStatus"></div>
+        <label>Username: <input id="inputUserName"></label><br><br>
+        <label>Repository: <input id="inputRepoName"></label><br><br>
+        <div>Max requests (auto ist 6): <input id="txfMaxRequests"></div>
+        <h4>Optional:</h4>
+        <!-- List for the labels and a button to add more rows to the list:-->
+        <ul id="labelList">
+            <li>
+                <input type="text" id="isLbl0" placeholder="Current Label"><div class="autocomplete"><input id="toLbl0" placeholder="Rename label to..."></div>
+            </li>
+            <input id="addLabel" type="button" value="+" onclick="createListElement()">
+        </ul>
+        <!-- Button to start crawling:-->
+        <input id="startButton" type="button" onclick="clickedOnStart()" value="start">
+    </div>
+
+    <!-- This wrapper contains the analysis tool:-->
+    <div id="analysisWrapper">
+        <h1>Analysis</h1>
+        <h4>
+			Here one can see the issues one just downloaded. One can also upload other files using the same JSON format to analyze them later.
+            <!-- Hier werden die soeben heruntergeladenen Issues angezeigt. Außerdem kann man hier andere Dateien mit Issues hochladen, 
+            um diese nachträglich zu analysieren. :-->
+        </h4>
+        <!-- Button for uploading JSON-files with issues:-->
+        <input type="file" onchange="uploadedFile()" id="fileUploader"><br>
+        <!-- Shows the labels of the JSON-file:-->
+        <div id="issueLabel">
+            <span id="txfIssueCount">Label:</span>
+            <input id="lblOut" disabled><br>
+        </div>
+        <!-- Shows one issue of the JSON-file:-->
+        <textarea id="txaText" disabled></textarea><br>
+        <!-- Change the currently displayed issue:-->
+        <div id="previousNextButtons">
+            <button onclick="nextIssue()">&#8882;</button> <span id="txfPage" style="width: 50px;">0</span> <button onclick="nextIssue(true)">&#8883;</button>
+        </div>
+    </div>
+
+    <script src="scripts/autocomplete.js"></script> 
+    <script src="scripts/main_logic.js"></script> 
+    <script src="scripts/upload_file.js"></script>   
+
+</body>
+
+</html>

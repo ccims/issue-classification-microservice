@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  main:
+    build: &build
+      context: .
+      args:
+        DEBUG_MODE: "FALSE"
+    image: &img issue_classifier:prod
+    env_file: &env ./envs/.prod.env
+    entrypoint: /microservice/entrypoints/main.sh
+    depends_on: &dep
+      - rabbitmq
+    restart: always
+    volumes:
+      - ./microservice:/microservice/microservice
+
+  celery_classifier:
+    build: *build
+    image: *img
+    entrypoint: /microservice/entrypoints/celery_classifier.sh
+    env_file: *env
+    depends_on: *dep
+    links:
+      - rabbitmq
+    restart: always
+
+  celery_vectoriser:
+    build: *build
+    image: *img
+    entrypoint: /microservice/entrypoints/celery_vectoriser.sh
+    env_file: *env
+    depends_on: *dep
+    links:
+      - rabbitmq
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    logging:
+      driver: "none"
+
+  flower:
+    image: mher/flower:0.9.4
+    command: ["--broker=amqp://guest:guest@rabbitmq:5672//"]
+    ports:
+      - 5555:5555
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq
+    logging:
+      driver: "none"
